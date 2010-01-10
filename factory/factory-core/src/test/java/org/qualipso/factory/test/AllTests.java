@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-
 import org.qualipso.factory.test.entity.FileTest;
 import org.qualipso.factory.test.entity.FolderTest;
 import org.qualipso.factory.test.entity.GroupTest;

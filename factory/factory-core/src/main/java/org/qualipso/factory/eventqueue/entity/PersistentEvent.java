@@ -18,8 +18,13 @@ package org.qualipso.factory.eventqueue.entity;
  */
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -32,23 +37,37 @@ import org.qualipso.factory.notification.Event;
  * @author Marlène HANTZ
  * @date 20 May 2009
  */
-@XmlType(name = "Event", namespace = FactoryNamingConvention.RESOURCE_NAMESPACE + EventQueue.RESOURCE_NAME, propOrder = { "fromResource", "throwedBy", "resourceType", "date", "eventType",
-		"args" })
+@Entity
+@XmlType(name = PersistentEvent.RESOURCE_NAME, namespace = FactoryNamingConvention.RESOURCE_NAMESPACE + EventQueue.RESOURCE_NAME, propOrder = { "fromResource", "throwedBy", "resourceType", "date", "eventType",
+		"args","eventQueue" })
 public class PersistentEvent implements Serializable {
 
+    @Id
+    private String id;
 	private static final long serialVersionUID = 7085572305198138327L;
 
+	public static final String RESOURCE_NAME = "PersistentEvent";
 	private String fromResource;
 	private String throwedBy;
 	private String resourceType;
 	private Date date;
 	private String eventType;
 	private String args;
+	@ManyToMany(mappedBy="events")
+	private Collection<EventQueue> eventQueue;
 
 	public PersistentEvent() {
 		date = new Date();
 	}
 
+	@XmlAttribute(name = "id", required = true)
+	public String getId(){
+		return id;
+	}
+	
+	public void setId(String id){
+		this.id = id;
+	}
 	public PersistentEvent(String fromResource, String resourceType, String eventType, String args) {
 		this();
 		setFromResource(fromResource);
@@ -178,5 +197,16 @@ public class PersistentEvent implements Serializable {
 		pe.setResourceType(event.getResourceType());
 		return pe;
 	}
+
+	@XmlAttribute(name = "queues", required = true)
+	public Collection<EventQueue> getEventQueue() {
+		return eventQueue;
+	}
+
+	public void setEventQueue(Collection<EventQueue> eventQueue) {
+		this.eventQueue = eventQueue;
+	}
+	
+	
 
 }

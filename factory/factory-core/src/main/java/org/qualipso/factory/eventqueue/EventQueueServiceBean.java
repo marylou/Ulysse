@@ -24,6 +24,7 @@
 package org.qualipso.factory.eventqueue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -356,7 +357,6 @@ public class EventQueueServiceBean implements EventQueueService {
                 }
 
                 eventqueue.getEvents().add(event);
-
                 em.persist(eventqueue);
             } else {
                 throw new CoreServiceException("Resource " + identifier + " is not managed by Event Queue Service");
@@ -469,7 +469,7 @@ public class EventQueueServiceBean implements EventQueueService {
                  * int size = eventqueue.getEvents().size(); Event[] evq = new
                  * Event[size]; evq = eventqueue.getEvents().toArray(evq);
                  */
-                ArrayList<PersistentEvent> newEventList = eventqueue.getEvents();
+                Collection<PersistentEvent> newEventList = eventqueue.getEvents();
                 if (newEventList.remove(e)) {
                     eventqueue.setEvents(newEventList);
                     em.merge(eventqueue);
@@ -524,7 +524,7 @@ public class EventQueueServiceBean implements EventQueueService {
                 ArrayList<PersistentEvent> resultContains = new ArrayList<PersistentEvent>();
                 ArrayList<PersistentEvent> resultEquals = new ArrayList<PersistentEvent>();
 
-                ArrayList<PersistentEvent> listEvent = eventqueue.getEvents();
+                Collection<PersistentEvent> listEvent = eventqueue.getEvents();
                 Iterator<PersistentEvent> it = listEvent.iterator();
 
                 while (it.hasNext()) {
@@ -590,7 +590,7 @@ public class EventQueueServiceBean implements EventQueueService {
                 ArrayList<PersistentEvent> resultContains = new ArrayList<PersistentEvent>();
                 ArrayList<PersistentEvent> resultFalse = new ArrayList<PersistentEvent>();
 
-                ArrayList<PersistentEvent> listEvent = eventqueue.getEvents();
+                Collection<PersistentEvent> listEvent = eventqueue.getEvents();
                 Iterator<PersistentEvent> it = listEvent.iterator();
 
                 while (it.hasNext()) {
@@ -669,7 +669,7 @@ public class EventQueueServiceBean implements EventQueueService {
                 ArrayList<PersistentEvent> resultContains = new ArrayList<PersistentEvent>();
                 ArrayList<PersistentEvent> resultFalse = new ArrayList<PersistentEvent>();
 
-                ArrayList<PersistentEvent> listEvent = eventqueue.getEvents();
+                Collection<PersistentEvent> listEvent = eventqueue.getEvents();
                 Iterator<PersistentEvent> it = listEvent.iterator();
 
                 while (it.hasNext()) {
@@ -738,7 +738,7 @@ public class EventQueueServiceBean implements EventQueueService {
 
                 ArrayList<PersistentEvent> result = new ArrayList<PersistentEvent>();
 
-                ArrayList<PersistentEvent> listEvent = eventqueue.getEvents();
+                Collection<PersistentEvent> listEvent = eventqueue.getEvents();
                 Iterator<PersistentEvent> it = listEvent.iterator();
 
                 while (it.hasNext()) {
@@ -797,7 +797,7 @@ public class EventQueueServiceBean implements EventQueueService {
 
                 ArrayList<PersistentEvent> result = new ArrayList<PersistentEvent>();
 
-                ArrayList<PersistentEvent> listEvent = eventqueue.getEvents();
+                Collection<PersistentEvent> listEvent = eventqueue.getEvents();
                 Iterator<PersistentEvent> it = listEvent.iterator();
 
                 while (it.hasNext()) {
@@ -855,7 +855,7 @@ public class EventQueueServiceBean implements EventQueueService {
 
                 ArrayList<PersistentEvent> result = new ArrayList<PersistentEvent>();
 
-                ArrayList<PersistentEvent> listEvent = eventqueue.getEvents();
+                Collection<PersistentEvent> listEvent = eventqueue.getEvents();
                 Iterator<PersistentEvent> it = listEvent.iterator();
 
                 while (it.hasNext()) {
@@ -913,7 +913,7 @@ public class EventQueueServiceBean implements EventQueueService {
 
                 ArrayList<PersistentEvent> result = new ArrayList<PersistentEvent>();
 
-                ArrayList<PersistentEvent> listEvent = eventqueue.getEvents();
+                Collection<PersistentEvent> listEvent = eventqueue.getEvents();
                 Iterator<PersistentEvent> it = listEvent.iterator();
                 while (it.hasNext()) {
                     PersistentEvent ev = it.next();
@@ -980,7 +980,7 @@ public class EventQueueServiceBean implements EventQueueService {
                 ArrayList<PersistentEvent> resultContains = new ArrayList<PersistentEvent>();
                 ArrayList<PersistentEvent> resultEquals = new ArrayList<PersistentEvent>();
 
-                ArrayList<PersistentEvent> listEvent = eventqueue.getEvents();
+                Collection<PersistentEvent> listEvent = eventqueue.getEvents();
                 Iterator<PersistentEvent> it = listEvent.iterator();
 
                 while (it.hasNext()) {
@@ -1038,7 +1038,7 @@ public class EventQueueServiceBean implements EventQueueService {
                 }
 
                 ArrayList<PersistentEvent> result = new ArrayList<PersistentEvent>();
-                ArrayList<PersistentEvent> listEvent = eventqueue.getEvents();
+                Collection<PersistentEvent> listEvent = eventqueue.getEvents();
                 Iterator<PersistentEvent> it = listEvent.iterator();
 
                 while (it.hasNext()) {
@@ -1321,19 +1321,26 @@ public class EventQueueServiceBean implements EventQueueService {
 
         if ((subjectre == null) || (objectre == null) || (targetre == null) || (queuePath == null))
             throw new EventQueueServiceException("Incorrect arg, should not be null");
-        Rule[] tmp = list();
+       /* Rule[] tmp = list();
         if (tmp.length != 0) {
             for (int i = 0; i < tmp.length; i++) {
-                if ((tmp[i].getObjectre().equals(objectre)) && (tmp[i].getQueuePath().equals(queuePath)) && (tmp[i].getSubjectre().equals(subjectre))
+                if ((tmp[i].getObjectre().equals(objectre)) && (tmp[i].getQueue().getPath().equals(queuePath)) && (tmp[i].getSubjectre().equals(subjectre))
                         && (tmp[i].getTargetre().equals(targetre)))
                     throw new EventQueueServiceException("Resource already exists in base");
             }
-        }
+        }*/
+        if(ruleExist(subjectre, objectre, targetre, queuePath))
+        	throw new EventQueueServiceException("Resource already exists in base");
+        
+        EventQueue e = getEventQueue(queuePath);
+        if(e == null)
+        	throw new EventQueueServiceException("Incorrect arg, unvalid queuePath");
         Rule r = new Rule();
         r.setSubjectre(subjectre);
         r.setObjectre(objectre);
         r.setTargetre(targetre);
-        r.setQueuePath(queuePath);
+        r.setQueue(e);
+        
         r.setId(UUID.randomUUID().toString());
         em.persist(r);
     }
@@ -1364,6 +1371,22 @@ public class EventQueueServiceBean implements EventQueueService {
         if (n != 1) {
             logger.warn("can't unregister " + subjectre + "/" + objectre + "/" + queuePath);
         }
+    }
+    
+    private boolean ruleExist(String subjectre, String objectre, String targetre, String queuePath){
+        Query q = em.createQuery("select r from Rule where subjectre=:subjectre and objectre=:objectre and targetre=:targetre and queuePath=:queuePath");
+        q.setParameter("subjectre", subjectre);
+        q.setParameter("objectre", objectre);
+        q.setParameter("targetre", targetre);
+        q.setParameter("queuePath", queuePath);
+        List<?> l = q.getResultList();
+        return l.size()==0;
+    }
+    
+    private EventQueue getEventQueue(String path){
+    	Query q = em.createQuery("Select q from EventQueue where path = :path");
+    	q.setParameter("path", path);
+    	return (EventQueue)q.getSingleResult();
     }
 
 }

@@ -2,7 +2,6 @@ package org.qualipso.factory.client.test.performance;
 
 
 
-import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
@@ -38,8 +37,6 @@ import org.qualipso.factory.notification.NotificationServiceException;
 
 public class EventQueueServicePTest {
     
-    
-    private static Context context;
 
     private static Log logger = LogFactory.getLog(EventQueueServicePTest.class);
 

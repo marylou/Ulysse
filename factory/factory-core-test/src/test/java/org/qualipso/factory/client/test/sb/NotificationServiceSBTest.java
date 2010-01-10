@@ -129,7 +129,7 @@ public class NotificationServiceSBTest {
         Rule[] t = eqs.list();
         Rule r = t[0];
 
-        assertTrue("SetUp : failed during notification.register(/profiles/.*, greeting.name.read," + pathResource + ".*, pathQueue2) " + r.getQueuePath() + " "
+        assertTrue("SetUp : failed during notification.register(/profiles/.*, greeting.name.read," + pathResource + ".*, pathQueue2) " + r.getQueue().getPath() + " "
                 + r.getObjectre() + " " + r.getSubjectre() + " " + r.getTargetre() + " " + eqs.list().length, eqs.list().length == 2);
         greeting.createName(pathResource, valueResource);
     }

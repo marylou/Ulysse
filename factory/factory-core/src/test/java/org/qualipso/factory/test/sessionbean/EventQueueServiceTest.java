@@ -3,6 +3,7 @@ package org.qualipso.factory.test.sessionbean;
 import static org.qualipso.factory.test.jmock.action.SaveParamsAction.saveParams;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 import java.util.Vector;
@@ -48,7 +49,7 @@ import com.bm.testsuite.BaseSessionBeanFixture;
 public class EventQueueServiceTest extends BaseSessionBeanFixture<EventQueueServiceBean> {
     private static Log logger = LogFactory.getLog(EventQueueServiceTest.class);
 
-    private static final Class<?>[] usedBeans = { EventQueue.class };
+    private static final Class<?>[] usedBeans = { EventQueue.class, PersistentEvent.class };
     private Mockery mockery;
     private EntityManager em;
     private BindingService binding;
@@ -203,11 +204,14 @@ public class EventQueueServiceTest extends BaseSessionBeanFixture<EventQueueServ
         final String caller = "theCaller";
         final FactoryResourceIdentifier identifier = new FactoryResourceIdentifier(EventQueueService.SERVICE_NAME, EventQueueService.SERVICE_NAME, UUID
                 .randomUUID().toString());
-
+        
+        
+        
         final Vector<Object> allParams = new Vector<Object>();
         final EventQueue firstQueue = new EventQueue();
         firstQueue.setEvents(new ArrayList<PersistentEvent>());
         firstQueue.setResourcePath(name);
+        logger.debug("1");
         mockery.checking(new Expectations() {
             {
 
@@ -232,17 +236,21 @@ public class EventQueueServiceTest extends BaseSessionBeanFixture<EventQueueServ
 
             }
         });
-
+        logger.debug("after mockchecking");
         EventQueueServiceBean eqsb = getBeanToTest();
-
         PersistentEvent e = new PersistentEvent("aResource", "aService", "aType", "anEventType", "");
         eqsb.pushEvent(name, e);
         // l'event est bien ajoute
-        assertEquals(((EventQueue) allParams.get(0)).getEvents().size(), 1);
-        assertEquals(((EventQueue) allParams.get(0)).getEvents().get(0).getFromResource(), "aResource");
-        assertEquals(((EventQueue) allParams.get(0)).getEvents().get(0).getThrowedBy(), "aService");
-        assertEquals(((EventQueue) allParams.get(0)).getEvents().get(0).getResourceType(), "aType");
-        assertEquals(((EventQueue) allParams.get(0)).getEvents().get(0).getEventType(), "anEventType");
+        
+        logger.debug("after push "+allParams.get(0).getClass()+" ");
+        EventQueue a = (EventQueue) allParams.get(0);;
+        Collection<PersistentEvent> c  = a.getEvents();
+        assertEquals(c.size(), 1);
+        PersistentEvent evt = (PersistentEvent) c.toArray()[0];
+        assertEquals(evt.getFromResource(), "aResource");
+        assertEquals(evt.getThrowedBy(), "aService");
+        assertEquals(evt.getResourceType(), "aType");
+        assertEquals(evt.getEventType(), "anEventType");
 
         mockery.assertIsSatisfied();
 
@@ -277,11 +285,14 @@ public class EventQueueServiceTest extends BaseSessionBeanFixture<EventQueueServ
         e = new PersistentEvent("aSResource", "aSService", "aSType", "aSEventType", "");
         eqsb.pushEvent(name, e);
         // l'event est bien ajoute
-        assertEquals(((EventQueue) allParams.get(1)).getEvents().size(), 2);
-        assertEquals(((EventQueue) allParams.get(1)).getEvents().get(1).getFromResource(), "aSResource");
-        assertEquals(((EventQueue) allParams.get(1)).getEvents().get(1).getThrowedBy(), "aSService");
-        assertEquals(((EventQueue) allParams.get(1)).getEvents().get(1).getResourceType(), "aSType");
-        assertEquals(((EventQueue) allParams.get(1)).getEvents().get(1).getEventType(), "aSEventType");
+        a = (EventQueue) allParams.get(0);
+        c  = a.getEvents();
+        assertEquals(c.size(), 2);
+        evt = (PersistentEvent) c.toArray()[1];
+        assertEquals(evt.getFromResource(), "aSResource");
+        assertEquals(evt.getThrowedBy(), "aSService");
+        assertEquals(evt.getResourceType(), "aSType");
+        assertEquals(evt.getEventType(), "aSEventType");
 
         mockery.assertIsSatisfied();
 

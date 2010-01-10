@@ -111,29 +111,29 @@ public class EventQueueServiceListenerBean implements MessageListener {
                                 try {
                                 	//TODO this security check is strange...
                                 	//TODO The MDB is not logged, how can it have the right update that is already checked in the queue in the pushEvent method...
-                                    String owner = binding.getProperty(rule.getQueuePath(), FactoryResourceProperty.OWNER, false);
-                                    pep.checkSecurity(owner, rule.getQueuePath(), "read");
+                                    String owner = binding.getProperty(rule.getQueue().getPath(), FactoryResourceProperty.OWNER, false);
+                                    pep.checkSecurity(owner, rule.getQueue().getPath(), "read");
 
-                                    eventQueue.pushEvent(rule.getQueuePath(), PersistentEvent.fromEvent(ev));
+                                    eventQueue.pushEvent(rule.getQueue().getPath(), PersistentEvent.fromEvent(ev));
                                 } catch (EventQueueServiceException e) {
-                                    logger.error("unable to push event : " + ev + "\nin queue : " + rule.getQueuePath(), e);
+                                    logger.error("unable to push event : " + ev + "\nin queue : " + rule.getQueue().getPath(), e);
                                 } catch (PEPServiceException e) {
-                                    logger.error("acces deny to push event : " + ev + "\nin queue : " + rule.getQueuePath(), e);
+                                    logger.error("acces deny to push event : " + ev + "\nin queue : " + rule.getQueue().getPath(), e);
                                     e.printStackTrace();
                                 } catch (InvalidPathException e) {
-                                    logger.error("Invalid path " + rule.getQueuePath() + " " + e);
+                                    logger.error("Invalid path " + rule.getQueue().getPath() + " " + e);
                                     e.printStackTrace();
                                 } catch (PathNotFoundException e) {
-                                    logger.error("Invalid path " + rule.getQueuePath() + " " + e);
+                                    logger.error("Invalid path " + rule.getQueue().getPath() + " " + e);
                                     e.printStackTrace();
                                 } catch (PropertyNotFoundException e) {
                                     logger.error("property " + FactoryResourceProperty.OWNER + " not found " + e);
                                     e.printStackTrace();
                                 } catch (AccessDeniedException e) {
-                                    logger.error("access denied " + rule.getQueuePath() + " " + e);
+                                    logger.error("access denied " + rule.getQueue().getPath() + " " + e);
                                     e.printStackTrace();
                                 } catch (BindingServiceException e) {
-                                    logger.error("binding exception " + rule.getQueuePath() + " " + e);
+                                    logger.error("binding exception " + rule.getQueue().getPath() + " " + e);
                                     e.printStackTrace();
                                 }
                             }

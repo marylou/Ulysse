@@ -90,7 +90,7 @@ public class EventQueueRulesServiceTest extends BaseSessionBeanFixture<EventQueu
         assertEquals(tab2[0].getSubjectre(), "subjectre");
         assertEquals(tab2[0].getObjectre(), "objectre");
         assertEquals(tab2[0].getTargetre(), "targetre");
-        assertEquals(tab2[0].getQueuePath(), "/li");
+        assertEquals(tab2[0].getQueue().getPath(), "/li");
 
         mockery.checking(new Expectations() {
             {
@@ -309,7 +309,7 @@ public class EventQueueRulesServiceTest extends BaseSessionBeanFixture<EventQueu
         assertEquals(tab[0].getSubjectre(), "subjectre");
         assertEquals(tab[0].getObjectre(), "objectre");
         assertEquals(tab[0].getTargetre(), "targetre");
-        assertEquals(tab[0].getQueuePath(), "queuePath");
+        assertEquals(tab[0].getQueue().getPath(), "queuePath");
 
         mockery.checking(new Expectations() {
             {
@@ -556,7 +556,7 @@ public class EventQueueRulesServiceTest extends BaseSessionBeanFixture<EventQueu
         assertEquals(tab[0].getSubjectre(), "subjectre");
         assertEquals(tab[0].getObjectre(), "objectre");
         assertEquals(tab[0].getTargetre(), "targetre");
-        assertEquals(tab[0].getQueuePath(), "/li");
+        assertEquals(tab[0].getQueue().getPath(), "/li");
 
         mockery.checking(new Expectations() {
             {
@@ -805,7 +805,7 @@ public class EventQueueRulesServiceTest extends BaseSessionBeanFixture<EventQueu
         assertEquals(tab[0].getSubjectre(), "subjectre");
         assertEquals(tab[0].getObjectre(), "objectre");
         assertEquals(tab[0].getTargetre(), "targetre");
-        assertEquals(tab[0].getQueuePath(), "/li");
+        assertEquals(tab[0].getQueue().getPath(), "/li");
 
         mockery.checking(new Expectations() {
             {
@@ -1054,7 +1054,7 @@ public class EventQueueRulesServiceTest extends BaseSessionBeanFixture<EventQueu
         assertEquals(tab[0].getSubjectre(), "subjectre");
         assertEquals(tab[0].getObjectre(), "objectre");
         assertEquals(tab[0].getTargetre(), "targetre");
-        assertEquals(tab[0].getQueuePath(), "/li");
+        assertEquals(tab[0].getQueue().getPath(), "/li");
 
         mockery.checking(new Expectations() {
             {
@@ -1303,7 +1303,7 @@ public class EventQueueRulesServiceTest extends BaseSessionBeanFixture<EventQueu
         assertEquals(tab[0].getSubjectre(), "subjectre");
         assertEquals(tab[0].getObjectre(), "objectre");
         assertEquals(tab[0].getTargetre(), "targetre");
-        assertEquals(tab[0].getQueuePath(), "/li");
+        assertEquals(tab[0].getQueue().getPath(), "/li");
 
         mockery.checking(new Expectations() {
             {

@@ -6,10 +6,13 @@ import java.util.regex.Pattern;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.qualipso.factory.FactoryNamingConvention;
 import org.qualipso.factory.notification.Event;
 
 /**
@@ -18,26 +21,20 @@ import org.qualipso.factory.notification.Event;
  * @author Philippe SCHMUCKER
  */
 @Entity
-@XmlType(name = "Rule", namespace = "http://org.qualipso.factory.ws/entity", propOrder = { "id", "subjectre", "objectre", "targetre", "queuePath" })
+@XmlType(name = Rule.RESOURCE_NAME, namespace = FactoryNamingConvention.RESOURCE_NAMESPACE + Rule.RESOURCE_NAME, propOrder = { "id", "subjectre", "objectre", "targetre", "queue" })
 public class Rule implements Serializable {
 
     private static final long serialVersionUID = -3537424425785767451L;
+    public static final String RESOURCE_NAME = "Rule";
     private static Log logger = LogFactory.getLog(Rule.class);
     @Id
     private String id;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     private String subjectre;
     private String objectre;
     private String targetre;
-    private String queuePath;
+    
+    @ManyToOne
+    private EventQueue queue;
 
     public String getSubjectre() {
         return subjectre;
@@ -63,12 +60,13 @@ public class Rule implements Serializable {
         this.targetre = targetre;
     }
 
-    public String getQueuePath() {
-        return queuePath;
+    @XmlAttribute(name = "queue", required = true)
+    public EventQueue getQueue() {
+        return queue;
     }
 
-    public void setQueuePath(String queuePath) {
-        this.queuePath = queuePath;
+    public void setQueue(EventQueue queue) {
+        this.queue = queue;
     }
 
     /**
@@ -139,7 +137,7 @@ public class Rule implements Serializable {
 
     @Override
     public String toString() {
-        return "Rule :\nsubjectre = \"" + subjectre + "\"\nobjectre = \"" + objectre + "\"\ntargetre = \"" + targetre + "\"\nqueuePath = \"" + queuePath + "\"";
+        return "Rule :\nsubjectre = \"" + subjectre + "\"\nobjectre = \"" + objectre + "\"\ntargetre = \"" + targetre + "\"\nqueuePath = \"" + queue.getPath() + "\"";
     }
 
     /**
@@ -152,8 +150,18 @@ public class Rule implements Serializable {
     public boolean matchByQueue(String queuere) {
         logger.info("matchByQueue(...) called");
         Pattern p = Pattern.compile(queuere);
-        Matcher m = p.matcher(queuePath);
+        Matcher m = p.matcher(queue.getPath());
         return m.matches();
     }
+    
+    @XmlAttribute(name = "id", required = true)
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 
 }
